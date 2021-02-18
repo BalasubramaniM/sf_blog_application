@@ -1,35 +1,34 @@
 import React, { useState, useEffect } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import GridList from "@material-ui/core/GridList";
-import GridListTile from "@material-ui/core/GridListTile";
-import GridListTileBar from "@material-ui/core/GridListTileBar";
-import ListSubheader from "@material-ui/core/ListSubheader";
-import IconButton from "@material-ui/core/IconButton";
-import InfoIcon from "@material-ui/icons/Info";
 
-import axios from 'axios';
-import _get from 'lodash/get';
+import cogoToast from "cogo-toast";
+import { stubFalse } from "lodash";
+import { useHistory } from "react-router-dom";
 
-import {fetchAllBlogs} from '../../app.apiActions';
-
-import { EMPTY_ARRAY } from "../../app.constants";
+import { fetchAllBlogs, deleteBlog } from "../../app.apiActions";
 
 import {
-  Box,
   Card,
   CardActionArea,
   CardMedia,
   CardContent,
   Typography,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Button,
+  LinearProgress,
+  GridList,
 } from "@material-ui/core";
-// import  from '@material-ui/core/Card';
+import { makeStyles } from "@material-ui/core/styles";
 
 import BlogCard from "../BlogCard";
-// import tileData from './tileData';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
+    flexFlow: 'column',
     flexWrap: "wrap",
     justifyContent: "space-around",
     overflow: "hidden",
@@ -54,15 +53,45 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     position: "absolute",
   },
+  progressBar: {
+    marginTop: '2.4rem'
+  }
 }));
 
 export default function BlogList() {
   const classes = useStyles();
+  const history = useHistory();
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(stubFalse);
+  const [open, setOpen] = useState(false);
+  const [currentBlogId, setCurrentBlogId] = useState(null);
 
   useEffect(() => {
     fetchAllBlogs().then((res) => setData(res));
   }, []);
+
+  const onDeleteBlog = (id) => () => {
+    setOpen(true);
+    setCurrentBlogId(id);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const deleteBlogAction = () => {
+    setLoading(true);
+    deleteBlog(currentBlogId).then((res) => {
+      if (!res) return;
+      cogoToast.success("Blog has been successfully deleted.");
+      setTimeout(() => {
+        history.go(0);
+      });
+    }).finally(() => {
+      setLoading(false);
+    });
+    setOpen(false);
+  };
 
   return (
     <div className={classes.root}>
@@ -75,20 +104,46 @@ export default function BlogList() {
         <CardActionArea>
           <CardContent>
             <Typography gutterBottom variant="h5" component="h2">
-              Lizard
+              Blogs
             </Typography>
             <Typography variant="body2" color="textSecondary" component="p">
-              Lizards are a widespread group of squamate reptiles, with over
-              6,000 species, ranging across all continents except Antarctica
+              Publish your passions your way.
             </Typography>
           </CardContent>
         </CardActionArea>
       </Card>
-      <GridList className={classes.gridList}>
-        {data.map((blog) => (
-          <BlogCard key={blog.id} blog={blog} />
-        ))}
-      </GridList>
+      {loading ? (
+        <LinearProgress className={classes.progressBar} />
+      ) : (
+        <GridList className={classes.gridList}>
+          {data.map((blog) => (
+            <BlogCard key={blog.id} blog={blog} onDeleteBlog={onDeleteBlog} />
+          ))}
+        </GridList>
+      )}
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Are you sure you want to delete this blog?"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            No
+          </Button>
+          <Button onClick={deleteBlogAction} color="primary" autoFocus>
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }

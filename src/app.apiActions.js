@@ -28,3 +28,37 @@ export const createBlog = (payload) =>
       cogoToast.error("Failed to create blog.");
       return null;
     });
+
+export const getBlog = (id) =>
+  axios
+    .get(`${BASE_URL}/${id}`)
+    .then((res) => {
+      return _get(res, "data", EMPTY_ARRAY);
+    })
+    .catch((err) => {
+      cogoToast.error("Failed to get blog details.");
+      return null;
+    });
+
+export const editBlog = (id, payload) =>
+  axios
+    .post(`${BASE_URL}/${id}`, payload)
+    .then((res) => {
+      return _get(res, "data", EMPTY_ARRAY);
+    })
+    .catch(() => {
+      cogoToast.error("Failed to save the changes.");
+      return null;
+    });
+
+export const deleteBlog = (id) =>
+  axios
+    .delete(`${BASE_URL}/${id}`)
+    .then((res) => {
+      return _get(res, "data", EMPTY_ARRAY);
+    })
+    .catch((err) => {
+      debugger;
+      cogoToast.error("Failed to delete blog.");
+      return null;
+    });
