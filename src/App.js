@@ -4,8 +4,9 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import "./App.scss";
 
 import HomePage from "./components/HomePage";
-import CreateBlog from "./components/CreateBlog";
 import ViewBlog from "./components/ViewBlog";
+import CreateBlog from "./components/CreateBlog";
+
 import {APP_VIEW, URL} from './app.constants';
 
 export default function App() {

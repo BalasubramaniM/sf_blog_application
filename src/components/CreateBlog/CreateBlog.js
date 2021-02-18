@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from "react";
 import clsx from "clsx";
-
-import { green } from "@material-ui/core/colors";
-import { makeStyles } from "@material-ui/core/styles";
-
 import cogoToast from "cogo-toast";
+import { useHistory } from "react-router-dom";
 
 import _get from "lodash/get";
 import _isNil from "lodash/isNil";
 import _isEmpty from "lodash/isEmpty";
-
-import { useHistory } from "react-router-dom";
 
 import {
   Container,
@@ -19,12 +14,14 @@ import {
   CircularProgress,
   LinearProgress,
 } from "@material-ui/core";
+import { green } from "@material-ui/core/colors";
+import { makeStyles } from "@material-ui/core/styles";
 
 import Header from "../Header";
 
-import { createBlog, getBlog, editBlog } from "../../app.apiActions";
-import { URL, APP_VIEW } from "../../app.constants";
 import { useQuery } from "../../app.helpers";
+import { URL, APP_VIEW } from "../../app.constants";
+import { createBlog, getBlog, editBlog } from "../../app.apiActions";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -62,16 +59,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function CreateBlog(props) {
-  const classes = useStyles();
-  const history = useHistory();
-  const [loading, setLoading] = useState(false);
-  const [isBlogLoading, setIsBlogLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
   const { view } = props;
 
+  const classes = useStyles();
+  const history = useHistory();
+  const query = useQuery();
+
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [isBlogLoading, setIsBlogLoading] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  let query = useQuery();
 
   const getBlogAction = (id) => {
     setIsBlogLoading(true);
@@ -81,7 +79,6 @@ export default function CreateBlog(props) {
         setIsBlogLoading(false);
         return;
       }
-
       const { title, text } = res;
       setTitle(title);
       setContent(text);

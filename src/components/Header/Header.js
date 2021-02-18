@@ -1,7 +1,6 @@
 import React from "react";
-
-import { makeStyles } from "@material-ui/core/styles";
-import SearchIcon from "@material-ui/icons/Search";
+import _map from "lodash/map";
+import { useHistory } from "react-router-dom";
 
 import {
   Button,
@@ -11,9 +10,8 @@ import {
   Container,
   CssBaseline,
 } from "@material-ui/core";
-
-import _map from "lodash/map";
-import { useHistory } from "react-router-dom";
+import SearchIcon from "@material-ui/icons/Search";
+import { makeStyles } from "@material-ui/core/styles";
 
 import { 
     NAVBAR_MENU_ITEMS, 
@@ -46,7 +44,9 @@ const useStyles = makeStyles((theme) => ({
 function Header(props) {
   const classes = useStyles();
   const history = useHistory();
+
   const { view } = props;
+
   const handleCreateBlogClick = () => history.push(APP_VIEW_VS_BUTTON_CLICK_HANDLER_URL[view]);
   const handleBlogHeaderClick = () => history.push(URL.HOME);
 

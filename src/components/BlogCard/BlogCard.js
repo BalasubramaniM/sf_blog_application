@@ -1,16 +1,17 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Card from "@material-ui/core/Card";
-import CardActionArea from "@material-ui/core/CardActionArea";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
-import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
-
 import moment from "moment";
-
 import { useHistory } from "react-router-dom";
+
+import {
+  Card,
+  CardActionArea,
+  CardMedia,
+  CardContent,
+  Typography,
+  Button,
+  CardActions,
+} from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 
 import { URL, NO_DATA } from "../../app.constants";
 
@@ -38,14 +39,13 @@ const useStyles = makeStyles({
 
 export default function BlogCard(props) {
   const { blog, onDeleteBlog } = props;
+
   const history = useHistory();
-  const { id, text = NO_DATA, timestamp, title = NO_DATA } = blog;
   const classes = useStyles();
-  
+
+  const { id, text = NO_DATA, timestamp, title = NO_DATA } = blog;
   const date = moment(timestamp).format("dddd, MMMM Do YYYY, h:mm:ss a");
-
   const onEditBlog = (id) => () => history.push(`${URL.EDIT}/?id=${id}`);
-
   const onViewBlog = (id) => () => history.push(`${URL.VIEW}/?id=${id}`);
 
   return (
